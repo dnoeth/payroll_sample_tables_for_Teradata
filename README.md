@@ -1,0 +1,1 @@
+# payroll_sample_tables_for_Teradata
