@@ -27,7 +27,7 @@ The data was downloaded, cleaned and split into multiple normalized tables in Ja
 
 ### Installing using a Windows client
 
- 1. Download [payroll_db_Teradata.zip]https://github.com/dnoeth/payroll_sample_tables_for_Teradata/blob/master/payroll_db_Teradata.zip(https://github.com/dnoeth/payroll_sample_tables_for_Teradata/blob/master/financial_db_Teradata.zip) and extract the zip file to a folder, e.g. `C:\Samples\payroll_db_Teradata`.
+ 1. Download [payroll_db_Teradata.zip](https://github.com/dnoeth/payroll_sample_tables_for_Teradata/blob/master/payroll_db_Teradata.zip) and extract the zip file to a folder, e.g. `C:\Samples\payroll_db_Teradata`.
 
  2. Modify the file `br_install.btq` to match your target system. Optionally modify the database name.
  
