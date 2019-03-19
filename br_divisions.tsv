@@ -1,0 +1,271 @@
+1	120020	MC-District  2
+1	170706	MC-Community Centers-Dr. Martin Luther King, Jr. Community Center
+1	120120	MC-District 12
+1	120050	MC-District  5
+1	120070	MC-District  7
+1	170206	MC-Community Centers-Jewel J. Newman Community Center
+1	120030	MC-District  3
+1	120090	MC-District  9
+1	170506	MC-Community Centers-Charles R. Kelly Community Center
+1	120060	MC-District  6
+1	170215	MC-Community Centers-JJN Community Center Summer Camp
+1	120080	MC-District  8
+1	120040	MC-District  4
+1	120010	MC-District  1
+1	185016	MC-Teenworkprepbr (A CAUW Grant)
+1	171006	MC-Community Centers-Leo S. Butler Community Center
+1	170106	MC-Community Centers-Chaneyville Community Center
+1	120110	MC-District 11
+1	120100	MC-District 10
+2	220000	Council Administrator-Mail Services
+2	230000	Council Administrator-Treasurer
+2	210000	Council Administrator-Administration
+3	300000	Council Budget Office
+5	510000	Parish Attorney-Administration
+5	540000	Parish Attorney-Pretrial Diversion
+5	514000	Parish Attorney-Risk & Claims Management
+5	511000	Parish Attorney-Legislative
+5	512100	Parish Attorney-Litigation & Risk Management
+5	550000	Parish Attorney-Gaming Enforcement
+5	513000	Parish Attorney-Collections
+5	530000	Parish Attorney-Alcoholic Beverage Control Office
+5	520000	Parish Attorney-City Prosecutor Office
+5	515000	Parish Attorney-Investigations
+5	512000	Parish Attorney-Litigation
+6	600000	Public Information Office
+8	800004	Animal Control & Rescue Center
+9	970002	Airport-Police/ARFF
+9	910002	Airport-Administration
+9	940002	Airport-Terminal Building
+9	920002	Airport-Airfield
+10	1040001	Fire Protection Districts-Central
+10	1020001	Fire Protection Districts-St. George
+10	1060001	Fire Protection Districts-District Six
+10	1030001	Fire Protection Districts-Brownsfield
+11	1100004	MARC-Administration
+12	1200015	Library Board of Control
+15	1500006	Downtown Development District
+16	1686016	Planning Commission-Grant
+16	1612016	Planning Commission-DA Grant
+16	1600000	Planning Commission
+20	2010000	City Court-Administration
+20	2020100	City Court-Judicial Support
+20	2046010	City Court-Volunteers in the Court
+20	2010050	City Court-Judges' Travel & Training and Special Expense E
+20	2020200	City Court-Court Services
+20	2010040	City Court-Judges' Travel & Training and Special Expense D
+20	2010080	City Court-Sobriety Court
+21	2171010	City Constable-Dare
+21	2110000	City Constable-General Fund
+21	2120000	City Constable-Constable Court Cost Fund
+22	2200000	Justice of Peace and Ward Constables
+25	2500000	District Court
+27	2700000	Family Court
+28	2800000	Juvenile Court
+31	3100000	District Attorney
+32	3200000	Registrar of Voters
+33	3300001	Coroner
+40	4070415	Mayor President-Community Centers-JJN Community Center Summer Camp
+40	4012036	Mayor President-Business Opportunity Center
+40	4020116	Mayor President-Special Progam - Summer Youth Employment Program
+40	4070106	Mayor President-Community Centers-Dr. Martin Luther King, Jr
+40	4030200	Mayor President-Citizens Service-Parking Garage
+40	4087100	Mayor President-Cities of Service Leadership Grant
+40	4060006	Mayor President-Landscape & Forestry
+40	4021011	Mayor President-Anti-Drug Task Force
+40	4070306	Mayor President-Community Centers-Delmont Service Center
+40	4029016	Mayor President-BR Performance Partnership Pilot Program
+40	4070206	Mayor President-Community Centers-Leo S. Butler Community Center
+40	4021041	Mayor President-Partnership To Reduce Gun Violence
+40	4071011	Mayor President-Juvenile Accountability Incentive Block Grant (JAIBG)
+40	4020406	Mayor President-Neighborhood Revitalization
+40	4070406	Mayor President-Community Centers-Jewel J. Newman Community Center
+40	4021074	Mayor President-ReCAST BR
+40	4070115	Mayor President-Community Center Summer Program MLK Jr
+40	4070506	Mayor President-Community Centers-Chaneyville Community Center
+40	4031000	Mayor President-Constituent & Neighborhood Program
+40	4030100	Mayor President-Citizens Service-Complaints & Weed Cut
+40	4010000	Mayor President-Administration
+41	4130000	Finance-Internal Auditing
+41	4140200	Finance-Revenue-Food Stamp
+41	4110000	Finance-Administration
+41	4140300	Finance-Service Fee
+41	4140100	Finance-Revenue Collection
+41	4120000	Finance-Accounting
+41	4130100	Finance-Revenue Auditing
+41	4150000	Finance-Budgeting
+43	4300000	Service Fee Business Department
+44	4400000	Information Services
+45	4500000	Purchasing
+46	4630000	Risk Management
+46	4610000	HR-Evaluation
+46	4611000	HR-Training & Employee Development
+46	4612000	HR-Employee Relations
+46	4620000	HR-Benefits & Safety
+47	4700000	Quality & Employee Development
+48	4800000	CPERS-Retirement Office
+50	5050011	PD-Communications
+50	5060001	PD-Criminal Investigation Bureau
+50	5020001	PD-Uniform Patrol Bureau
+50	5013601	PD-Brave Grant
+50	5050021	PD-Special Operations Bureau
+50	5013701	PD-Byrne Criminal Justice Innovation (BCJI)
+50	5040001	PD-Admin Services Bureau
+50	5010001	PD-Administration
+50	5050001	PD-Operational Services Bureau
+51	5120011	FD-Investigations
+51	5130001	FD-Communications & Maintenance
+51	5140001	FD-Special Services
+51	5110011	FD-Training
+51	5110001	FD-Administration
+51	5120021	FD-Prevention
+51	5120001	FD-Fire Suppression & Prevention
+51	5120031	FD-Hazardous Materials
+52	5210001	EMS-Emergency Medical Services
+52	5240001	EMS-Prison Medical Services
+52	5220001	EMS-Telecommunications
+52	5246024	EMS-Prison Medical Services Standard Screen Grant
+52	5230001	EMS-EBRP Communications District
+53	5320001	DJS-Probation & Family Services
+53	5347341	DJS-Families in Need of Service
+53	5371011	DJS-Juvenile Accountability Incentive Block Grant (JAIBG)
+53	5310001	DJS-Administration
+53	5351011	DJS-Title IV - E Grant
+53	5357011	DJS-Families in Need of Services (FINS)
+53	5330001	DJS-Detention Facility
+54	5411011	MOHSEP-Emergency Preparedness-FEMA Grant-Proj Impac
+54	5453301	MOHSEP-Metro Medical Response System
+54	5453061	MOHSEP-Terrorism Consequence Management Preparedness
+54	5400001	MOHSEP-Administration
+54	5484016	MOHSEP-Gulf States Emergency Preparedness
+54	5453221	MOHSEP-Urban Area Security Initiative
+54	5453191	MOHSEP-Urban Area Security Initiative
+54	5411041	MOHSEP-Metropolitan Medical Response (MMRS) FEMA
+54	5421011	MOHSEP-Metro Medical Response System Grant
+55	5510005	BRCC-Administration
+56	5600000	Municipal Fire & Police Civil Service Board
+60	6099044	DHDS-LIHEAP - Energy Assistance-Supplement
+60	6043316	DHDS-Headstart Food Program
+60	6047046	DHDS-LA Job Employ Training Job Search Part
+60	6003005	DHDS-Sports Academy
+60	6055026	DHDS-WIA Youth Program
+60	6044016	DHDS-JTPA II-A Administration
+60	6021096	DHDS-BRACA Head Start Handicap
+60	6044446	DHDS-Summer Youth Basic Education - Staff
+60	6021506	DHDS-Ryan White-Administration
+60	6021206	DHDS-Head Start Expansion Centers
+60	6044266	DHDS-JTPA II-C Training Related/Orientation
+60	6044406	DHDS-Summer Youth Administration
+60	6044716	DHDS-Community Services Block Grant-Outreach
+60	6055116	DHDS-WIA Adult Administration
+60	6055016	DHDS-WIA Adult Program
+60	6055086	DHDS-WIA Hurricane Katrina Program
+60	6044676	DHDS-JTPA Welfare To Work - Training Rel/Orientation
+60	6041016	DHDS-Commodity Distribution
+60	6055046	DHDS-Tropical Storm Allison
+60	6044206	DHDS-JTPA II-C Administration
+60	6044706	DHDS-Community Services Block Grant-Admin
+60	6021126	DHDS-Head Start Crisis Relief Funds
+60	6044666	DHDS-JTPA Welfare To Work - Direct Training
+60	6021086	DHDS-BRACA Head Start-Administration
+60	6044096	DHDS-JTPA Title II - A
+60	6043036	DHDS-JTPA 8% Direct Training Staff
+60	6043304	DHDS-Summer Food Program
+60	6001006	DHDS-Administration
+60	6021056	DHDS-Head Start/Transition
+60	6044466	DHDS-Summer Youth Job Development
+60	6047036	DHDS-LA Job Employment Training Job Search
+60	6055056	DHDS-The Step Program
+60	6055216	DHDS-WIA Neg - Gustav Program
+60	6055006	DHDS-WIA Administration
+60	6058034	DHDS-LIHAEP - Low Income Housing Energy Asst
+60	6044076	DHDS-JTPA II-A Training Related/Orientation
+60	6044286	DHDS-JTPA II-C Direct Training/Youth Services
+60	6044756	DHDS-Displaced Summer Program Participants
+60	6021306	DHDS-Head Start Early Childhood Centers
+60	6044036	DHDS-JTPA II-A Direct Training/Case Management
+60	6055076	DHDS-WIA Hurricane Katrina Admin
+60	6055036	DHDS-WIA Dislocated Workers Program
+60	6070006	DHDS-Leo S Butler Community Center
+60	6021066	DHDS-Head Start
+60	6044416	DHDS-Summer Youth Common Services
+60	6055306	DHDS-WIA - Leap
+60	6044436	DHDS-Summer Youth Vocational Arts - Part.
+61	6114606	OCD-Section 8 Voucher Program
+61	6114586	OCD-Community and Economic Development
+61	6114016	OCD-Community Development Block Grant
+61	6114046	OCD-Home Investment Partnerships Program
+61	6114066	OCD-HOPWA
+61	6121016	OCD-Ryan White Administration
+70	7010010	DPW-Public Building Maint - Prison
+70	7032202	DPW-South Lot - Bridge & Canal
+70	7070423	DPW-Sewerage-Wasterwater Treatment-South Plant
+70	7005000	DPW-311 Call Center
+70	7031202	DPW-East Lot - Bridge & Canal
+70	7003400	DPW-Sewer Engineering
+70	7061021	DPW-Comp. Resiliency Pilot Program
+70	7030102	DPW-North Lot - Streets & Roads
+70	7070443	DPW-Sewerage-Wasterwater Treatment-Pump Stations
+70	7070403	DPW-Sewerage-Wasterwater Treatment
+70	7060303	DPW-Waste Management
+70	7006000	DPW-Citizens Service-Parking Garage
+70	7070303	DPW-Sewerage-Wastewater Collection
+70	7070103	DPW-Sewerage-Administration
+70	7060413	DPW-Solid Waste Disposal - Devil's Swamp
+70	7003010	DPW-Field Engineering
+70	7020001	DPW-Inspection
+70	7034102	DPW-Street Operations
+70	7041086	DPW-Urban Forestry Educational Enhancement
+70	7070493	DPW-Sewerage-Wastewater Treatment-Laboratory
+70	7001000	DPW-Administration
+70	7070353	DPW-Sewerage-Scada Operations
+70	7003410	DPW-Sewer Field Engineering
+70	7007000	DPW-Architectural Services
+70	7041096	DPW-Urban Forestry Management & Greenspace
+70	7032102	DPW-South Lot - Streets & Roads
+70	7070483	DPW-Sewerage-Wastewater Treatment-Administration
+70	7054016	DPW-Capital Area Reg Backyard Composting
+70	7060313	DPW-Waste Management and Street Maintenance
+70	7033002	DPW-Bridge & Canal Operations
+70	7010000	DPW-Public Building Maintenance
+70	7090100	DPW-Central Garage-Operations & Maintenance
+70	7040002	DPW-State Highway Maintenance
+70	7070203	DPW-Sewerage-Environmental
+70	7070413	DPW-Sewerage-Wasterwater Treatment-Central Plant
+70	7070433	DPW-Sewerage-Wasterwater Treatment-North Plant
+70	7025001	DPW-Traffic Engineering
+70	7070343	DPW-Sewerage-Wastewater Collection - Pump Stations
+70	7030202	DPW-North Lot - Bridge & Canal
+70	7060423	DPW-North Landfill
+70	7005100	DPW-Complaint Resolution
+70	7003000	DPW-Engineering
+70	7060506	DPW-Recycling
+70	7031102	DPW-East Lot - Streets & Roads
+70	7004000	DPW-Warehouse
+71	7127002	Transport and Drainage-Parish Street Maint
+71	7120002	Transport and Drainage-Administration
+71	7123002	Transport and Drainage-Traffic Engineering
+71	7121002	Transport and Drainage-Engineering
+71	7122002	Transport and Drainage-Field Engineering
+72	7210002	Road Rehabilitation Program-City Parish
+73	7310001	Development-Administration
+73	7311001	Development-Subdivisions
+73	7313001	Development-Blight Enforcement
+73	7312001	Development-Permits & Inspections
+75	7570063	Overflows/Bypasses
+75	7570013	Construction Administration
+76	7601000	BOCP-Administration
+76	7604000	BOCP-311 Call Center
+76	7605000	BOCP-Parking Garage
+76	7602000	BOCP-Workforce Dev
+76	7603000	BOCP-Warehouse
+77	7701002	Maintenance-Administration
+77	7704002	Maintenance-Drainage Maintenance
+77	7702002	Maintenance-Landscape Maintenance
+77	7703002	Maintenance-Street Maintenance
+78	7804000	Buildings and Grounds-Building Maintenance-Prison
+78	7803000	Buildings and Grounds-Public Building Maintenance
+78	7802000	Buildings and Grounds-Architectural Services
+78	7801000	Buildings and Grounds-Administration
+79	7901000	Fleet Management-Central Garage Operations & Maintenance
+89	8999999	Unidentified Charges

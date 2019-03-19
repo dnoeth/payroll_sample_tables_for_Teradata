@@ -1,0 +1,367 @@
+.SET SESSION TRANSACTION BTET;
+
+/************** modify logon & database **************/
+.LOGON myTeradata/myUser,myPassword;
+DATABASE teradata_education;
+/*****************************************************/
+
+.SET QUIET ON;
+.SET TIMEMSG NONE;
+.SET ECHOREQ ERRORONLY;
+.SET MAXERROR 1
+.SET WIDTH 200;
+
+
+/*****************************************************
+To reload the tables must be dropped in a specific
+order due to the FK constraints
+*****************************************************/
+/*
+    ALTER TABLE br_departments
+    DROP FOREIGN KEY (manager_employee_number) REFERENCES WITH NO CHECK OPTION br_payroll (employee_number); 
+    DROP TABLE br_payroll;
+    DROP TABLE br_salary_hist;
+    DROP TABLE br_pay_plan;
+    DROP TABLE br_divisions;
+    DROP TABLE br_departments;
+    DROP TABLE br_jobs;
+    DROP VIEW br_active_employees;
+    DROP VIEW br_active_jobs;
+*/
+
+
+.SET QUIET OFF;
+.REMARK 'Creating tables...';
+.SET QUIET ON;
+
+/************* Create Tables *************/
+
+CREATE SET TABLE br_departments ,NO FALLBACK
+     (
+      department_number BYTEINT NOT NULL,
+      acronym VARCHAR(6) CHARACTER SET Latin NOT CaseSpecific,
+      department_name VARCHAR(75) CHARACTER SET Latin NOT CaseSpecific NOT NULL,
+      budget_amount DECIMAL(12,2),
+      manager_employee_number INTEGER)
+UNIQUE PRIMARY INDEX ( department_number );
+
+COMMENT ON TABLE br_departments IS 'Departments within City-Parish government (PK: department_number)';
+COMMENT ON COLUMN br_departments.department_number       IS 'Number of the department (PK)';
+COMMENT ON COLUMN br_departments.acronym                 IS 'Acronym or abbreviation of the department name';
+COMMENT ON COLUMN br_departments.department_name         IS 'Name of the department';
+COMMENT ON COLUMN br_departments.budget_amount           IS 'Yearly budget of the depertment';
+COMMENT ON COLUMN br_departments.manager_employee_number IS 'Employee number of the department''smanager (FK to br_payroll)';
+
+
+CREATE SET TABLE br_divisions ,NO FALLBACK
+     (
+      department_number BYTEINT NOT NULL,
+      division_number INTEGER NOT NULL,
+      division_name VARCHAR(75) CHARACTER SET Latin NOT CaseSpecific NOT NULL)
+UNIQUE PRIMARY INDEX ( division_number );
+
+COMMENT ON TABLE br_divisions IS 'Divisions within City-Parish government (PK: division_number)';
+COMMENT ON COLUMN br_divisions.department_number IS 'Number of the department the division belongs to (FK to br_departments)';
+COMMENT ON COLUMN br_divisions.division_number   IS 'Number of the division (PK)';
+COMMENT ON COLUMN br_divisions.division_name     IS 'Name of the division';
+
+
+CREATE SET TABLE br_jobs ,NO FALLBACK
+     (
+      job_code INTEGER NOT NULL,
+      pay_grade SMALLINT,
+      legacy_flag BYTEINT NOT NULL, -- 0 = active job code, 1 = job_code no longer used
+      job_title VARCHAR(80) CHARACTER SET Latin NOT CaseSpecific NOT NULL)
+UNIQUE PRIMARY INDEX ( job_code );
+
+COMMENT ON TABLE  br_jobs IS 'Jobs within City-Parish government, both active and inactive (PK: job_code)';
+COMMENT ON COLUMN br_jobs.job_code    IS 'Code assigned to each job (PK)';
+COMMENT ON COLUMN br_jobs.pay_grade   IS 'Salary range the job is assigned to';
+COMMENT ON COLUMN br_jobs.legacy_flag IS 'Indicator for inactive job codes: 0 - active/currently used, 1 - inactive/no longer used';
+COMMENT ON COLUMN br_jobs.job_title   IS 'Describes a person''s job in the governmental organization';
+
+
+CREATE SET TABLE br_pay_plan ,NO FALLBACK
+
+     (
+      pay_grade SMALLINT NOT NULL,
+      pay_step BYTEINT NOT NULL,
+      annual_salary DECIMAL(9,2) NOT NULL)
+PRIMARY INDEX ( pay_grade );
+COMMENT ON TABLE br_pay_plan                IS 'A pay plan defines the salary ranges for each job class (PK: pay_grade, pay_step)';
+COMMENT ON COLUMN br_pay_plan.pay_grade     IS 'Pay grade assigned to a job class';
+COMMENT ON COLUMN br_pay_plan.pay_step      IS 'Each pay grade contains 19 steps (Fire contains 21 steps)';
+COMMENT ON COLUMN br_pay_plan.annual_salary IS 'Base annual salary based on pay grade and pay step';
+
+
+CREATE SET TABLE br_payroll ,NO FALLBACK
+     (
+      employee_number INTEGER NOT NULL,
+      last_name VARCHAR(25) CHARACTER SET Latin NOT CaseSpecific NOT NULL,
+      first_name VARCHAR(25) CHARACTER SET Latin NOT CaseSpecific NOT NULL,
+      middle_initial CHAR(1) CHARACTER SET Latin Uppercase NOT CaseSpecific,
+      name_suffix VARCHAR(3) CHARACTER SET Latin NOT CaseSpecific,
+      birthdate DATE FORMAT 'yyyy-mm-dd',
+      department_number BYTEINT NOT NULL,
+      division_number INTEGER NOT NULL,
+      job_code INTEGER,
+      pay_grade SMALLINT NOT NULL,
+      pay_step BYTEINT NOT NULL,
+      gender CHAR(1) CHARACTER SET Latin Uppercase NOT CaseSpecific NOT NULL,
+      race CHAR(1) CHARACTER SET Latin Uppercase NOT CaseSpecific NOT NULL,
+      hire_date DATE FORMAT 'YYYY-MM-DD' NOT NULL,
+      hire_end_date DATE FORMAT 'YYYY-MM-DD',
+      years_service BYTEINT NOT NULL,
+      scheduled_hours DECIMAL(4,1) NOT NULL,
+      longevity_percentage DECIMAL(2,2) NOT NULL,
+      base_hourly_rate DECIMAL(6,2) NOT NULL,
+      total_hourly_rate DECIMAL(6,2) NOT NULL,
+      overtime_hourly_rate DECIMAL(7,2) NOT NULL,
+      annual_salary DECIMAL(8,2) NOT NULL,
+      status BYTEINT NOT NULL)
+UNIQUE PRIMARY INDEX ( employee_number );
+
+COMMENT ON TABLE br_payroll IS 'City-Parish employees, both active and inactive, that exist in the City-Parish Payroll System (PK: employee_number)';
+COMMENT ON COLUMN br_payroll.employee_number      IS 'Employee information such as salary, department and job (PK)';
+COMMENT ON COLUMN br_payroll.last_name            IS 'Last name of the employee';
+COMMENT ON COLUMN br_payroll.first_name           IS 'First name of the employee';
+COMMENT ON COLUMN br_payroll.middle_initial       IS 'Middle initial of the employee';
+COMMENT ON COLUMN br_payroll.name_suffix          IS 'Surname suffix: Jr, Sr, MD, II, III, IV, V';
+COMMENT ON COLUMN br_payroll.birthdate            IS 'Date of birth';
+COMMENT ON COLUMN br_payroll.department_number    IS 'Department code for the department to which the employee is assigned (FK to br_departments)';
+COMMENT ON COLUMN br_payroll.division_number      IS 'Code of the division within the department to which the employee is assigned (FK to br_divisions)';
+COMMENT ON COLUMN br_payroll.job_code             IS 'Job code for the employee (FK to br_jobs)';
+COMMENT ON COLUMN br_payroll.pay_grade            IS 'Salary range the employee''s is assigned to (FK to br_pay_grades)';
+COMMENT ON COLUMN br_payroll.pay_step             IS 'Salary step within the salary range';
+COMMENT ON COLUMN br_payroll.gender               IS 'Gender: F - female, M - male, U - Undecided/Other';
+COMMENT ON COLUMN br_payroll.race                 IS 'Race of the employee: A - Asian? ,B - Black, I - American Indian?, O - Other?, S - Hispanic?, T - Two or more races?, U - Unknown?, W - White';
+COMMENT ON COLUMN br_payroll.hire_date            IS 'Most current date employee hired (Does not include broken service with the City-Parish)';
+COMMENT ON COLUMN br_payroll.hire_end_date        IS 'End of service date. The employee may have retired, resigned or was terminated';
+COMMENT ON COLUMN br_payroll.years_service        IS 'Years of service with City-Parish based on current hire date';
+COMMENT ON COLUMN br_payroll.scheduled_hours      IS 'Scheduled hours per pay period';
+COMMENT ON COLUMN br_payroll.longevity_percentage IS 'Percentage of pay earned by employee for longevity with City-Parish';
+COMMENT ON COLUMN br_payroll.base_hourly_rate     IS 'Hourly rate based on pay grade and step';
+COMMENT ON COLUMN br_payroll.total_hourly_rate    IS 'Hourly rate plus longevity and other earning allowances (Educational, Hazardous Pay, etc)';
+COMMENT ON COLUMN br_payroll.overtime_hourly_rate IS 'Total hourly rate multiplied by 1.5';
+COMMENT ON COLUMN br_payroll.annual_salary        IS 'Annual salary based on paygrade and step, does not include any additional earnings';
+COMMENT ON COLUMN br_payroll.status               IS 'Status in payroll system: 0 - Active, 1 - Temporary Leave (no arrears), 2 - Temporary Leave with Arrears, 3 - Inactive, 4 - Terminated Last Pay Period, 5 - No longer with City-Parish';
+
+
+CREATE SET TABLE br_salary_hist ,NO FALLBACK
+     (
+      employee_number INTEGER NOT NULL,
+      sal_year SMALLINT,
+      last_name VARCHAR(25) CHARACTER SET Latin NOT CaseSpecific NOT NULL,
+      first_name VARCHAR(25) CHARACTER SET Latin NOT CaseSpecific NOT NULL,
+      middle_initial CHAR(1) CHARACTER SET Latin Uppercase NOT CaseSpecific,
+      name_suffix VARCHAR(3) CHARACTER SET Latin NOT CaseSpecific,
+      department_number BYTEINT NOT NULL,
+      division_number INTEGER NOT NULL,
+      job_code INTEGER,
+      hire_date DATE FORMAT 'YYYY-MM-DD' NOT NULL,
+      employment_end_date DATE FORMAT 'YYYY-MM-DD',
+      scheduled_hours SMALLINT NOT NULL,
+      longevity_percentage DECIMAL(2,2) NOT NULL,
+      hourly_rate DECIMAL(6,2) NOT NULL,
+      base_hourly_rate DECIMAL(6,2) NOT NULL,
+      overtime_hourly_rate DECIMAL(7,2) NOT NULL,
+      total_pay DECIMAL(9,2) NOT NULL,
+      base_pay DECIMAL(9,2) NOT NULL,
+      overtime_pay DECIMAL(9,2) NOT NULL,
+      overtime_hours DECIMAL(6,2) NOT NULL,
+      status BYTEINT NOT NULL) --
+PRIMARY INDEX ( employee_number );
+
+COMMENT ON TABLE br_salary_hist IS 'City-Parish employees'' annual salaries and other payroll related information (years 2008 to 2017). Information is calculated after the last payroll is run for the year specified (PK: employee_number, sal_year)';
+COMMENT ON COLUMN br_salary_hist.employee_number      IS 'Employee information such as salary, department and job for each year (PK)';
+COMMENT ON COLUMN br_salary_hist.sal_year             IS 'Year the salary was paid (PK)';
+COMMENT ON COLUMN br_salary_hist.last_name            IS 'Last name of the employee';
+COMMENT ON COLUMN br_salary_hist.first_name           IS 'First name of the employee';
+COMMENT ON COLUMN br_salary_hist.middle_initial       IS 'Middle initial of the employee';
+COMMENT ON COLUMN br_salary_hist.name_suffix          IS 'Surname suffix. For example, Jr, Sr, MD, II, III, IV, V';
+COMMENT ON COLUMN br_salary_hist.department_number    IS 'Department code for the department to which the employee is assigned (FK to br_departments)';
+COMMENT ON COLUMN br_salary_hist.division_number      IS 'Code of the division within the department to which the employee is assigned (FK to br_divisions)';
+COMMENT ON COLUMN br_salary_hist.job_code             IS 'Job code for the employee (FK to br_jobs)';
+COMMENT ON COLUMN br_salary_hist.hire_date            IS 'Most current date employee hired (Does not include broken service with the City-Parish)';
+COMMENT ON COLUMN br_salary_hist.employment_end_date  IS 'End of service date. The employee may have retired, resigned or was terminated';
+COMMENT ON COLUMN br_salary_hist.scheduled_hours      IS 'Scheduled hours per pay period';
+COMMENT ON COLUMN br_salary_hist.longevity_percentage IS 'Percentage of pay earned by employee for longevity with City-Parish';
+COMMENT ON COLUMN br_salary_hist.hourly_rate          IS 'Hourly rate based on pay grade and step';
+COMMENT ON COLUMN br_salary_hist.base_hourly_rate     IS 'Hourly rate plus longevity and other earning allowances (Educational, Hazardous Pay, etc)';
+COMMENT ON COLUMN br_salary_hist.overtime_hourly_rate IS 'Total hourly rate multiplied by 1.5';
+COMMENT ON COLUMN br_salary_hist.total_pay            IS 'Base pay plus overtime plus/minus any adjustments';
+COMMENT ON COLUMN br_salary_hist.base_pay             IS 'Annual salary plus longevity and other earning allowances (Educational, Hazardous Pay, etc) ';
+COMMENT ON COLUMN br_salary_hist.overtime_pay         IS 'Total overtime amount earned for the year';
+COMMENT ON COLUMN br_salary_hist.overtime_hours       IS 'Total number of overtime hours worked for the year';
+COMMENT ON COLUMN br_salary_hist.status               IS 'Status in payroll system: 0 - Active, 1 - Temporary Leave (no arrears), 2 - Temporary Leave with Arrears, 3 - Inactive, 4 - Terminated Last Pay Period, 5 - No longer with City-Parish';
+
+
+.SET QUIET OFF;
+.REMARK 'Loading Tables...';
+.SET QUIET ON;
+
+/************* Load Tables *************/
+
+.SET PACK 5000
+
+
+.REMARK 'Loading br_departments: 53 rows';
+.IMPORT vartext '	'  FILE br_departments.tsv
+.REPEAT * Pack 5000
+USING ("department_number" VARCHAR(6),"acronym" VARCHAR(6),"department_name" VARCHAR(75),"budget_amount" VARCHAR(14),"manager_employee_number" VARCHAR(11))
+INSERT INTO br_departments ("department_number","acronym","department_name","budget_amount","manager_employee_number")
+VALUES (:"department_number",:"acronym",:"department_name",:"budget_amount",:"manager_employee_number");
+
+
+.REMARK 'Loading br_divisions: 271 rows';
+.IMPORT vartext '	'  FILE br_divisions.tsv
+.REPEAT * Pack 5000
+USING ("department_number" VARCHAR(4),"division_number" VARCHAR(11),"division_name" VARCHAR(75))
+INSERT INTO br_divisions ("department_number","division_number","division_name")
+VALUES (:"department_number",:"division_number",:"division_name");
+
+
+.REMARK 'Loading br_jobs: 1226 rows';
+.IMPORT vartext '	'  FILE br_jobs.tsv
+.REPEAT * Pack 5000
+USING ("job_code" VARCHAR(11),"pay_grade" VARCHAR(6),"legacy_flag" VARCHAR(4),"job_title" VARCHAR(80))
+INSERT INTO br_jobs ("job_code","pay_grade","legacy_flag","job_title")
+VALUES (:"job_code",:"pay_grade",:"legacy_flag",:"job_title");
+
+
+.REMARK 'Loading br_pay_plan: 2479 rows';
+.IMPORT vartext '	'  FILE br_pay_plan.tsv
+.REPEAT * Pack 5000
+USING ("pay_grade" VARCHAR(11),"pay_step" VARCHAR(4),"annual_salary" VARCHAR(11))
+INSERT INTO br_pay_plan ("pay_grade","pay_step","annual_salary")
+VALUES (:"pay_grade",:"pay_step",:"annual_salary");
+
+
+.REMARK 'Loading br_payroll: 24740 rows';
+.IMPORT vartext '	'  FILE br_payroll.tsv
+.REPEAT * Pack 5000
+
+USING ("employee_number" VARCHAR(11),"last_name" VARCHAR(25),"first_name" VARCHAR(25),"middle_initial" VARCHAR(1),"name_suffix" VARCHAR(3),"birthdate" VARCHAR(10),"department_number" VARCHAR(4),"division_number" VARCHAR(11),"job_code" VARCHAR(11),"pay_grade" VARCHAR(6),"pay_step" VARCHAR(4),"gender" VARCHAR(1),"race" VARCHAR(1),"hire_date" VARCHAR(10),"hire_end_date" VARCHAR(10),"years_service" VARCHAR(4),"scheduled_hours" VARCHAR(6),"longevity_percentage" VARCHAR(4),"base_hourly_rate" VARCHAR(8),"total_hourly_rate" VARCHAR(8),"overtime_hourly_rate" VARCHAR(9),"annual_salary" VARCHAR(10),"status" VARCHAR(4))
+INSERT INTO br_payroll ("employee_number","last_name","first_name","middle_initial","name_suffix","birthdate","department_number","division_number","job_code","pay_grade","pay_step","gender","race","hire_date","hire_end_date","years_service","scheduled_hours","longevity_percentage","base_hourly_rate","total_hourly_rate","overtime_hourly_rate","annual_salary","status")
+VALUES (:"employee_number",:"last_name",:"first_name",:"middle_initial",:"name_suffix",:"birthdate",:"department_number",:"division_number",:"job_code",:"pay_grade",:"pay_step",:"gender",:"race",:"hire_date",:"hire_end_date",:"years_service",:"scheduled_hours",:"longevity_percentage",:"base_hourly_rate",:"total_hourly_rate",:"overtime_hourly_rate",:"annual_salary",:"status");
+
+
+.REMARK 'Loading br_salary_hist: 54338 rows';
+.IMPORT vartext '	'  FILE br_salary_hist.tsv
+.REPEAT * Pack 5000
+USING ("employee_number" VARCHAR(11),"sal_year" VARCHAR(6),"last_name" VARCHAR(25),"first_name" VARCHAR(25),"middle_initial" VARCHAR(1),"name_suffix" VARCHAR(3),"department_number" VARCHAR(4),"division_number" VARCHAR(11),"job_code" VARCHAR(11),"hire_date" VARCHAR(10),"employment_end_date" VARCHAR(10),"scheduled_hours" VARCHAR(6),"longevity_percentage" VARCHAR(4),"hourly_rate" VARCHAR(8),"base_hourly_rate" VARCHAR(8),"overtime_hourly_rate" VARCHAR(9),"total_pay" VARCHAR(11),"base_pay" VARCHAR(11),"overtime_pay" VARCHAR(11),"overtime_hours" VARCHAR(8),"status" VARCHAR(4))
+INSERT INTO br_salary_hist ("employee_number","sal_year","last_name","first_name","middle_initial","name_suffix","department_number","division_number","job_code","hire_date","employment_end_date","scheduled_hours","longevity_percentage","hourly_rate","base_hourly_rate","overtime_hourly_rate","total_pay","base_pay","overtime_pay","overtime_hours","status")
+VALUES (:"employee_number",:"sal_year",:"last_name",:"first_name",:"middle_initial",:"name_suffix",:"department_number",:"division_number",:"job_code",:"hire_date",:"employment_end_date",:"scheduled_hours",:"longevity_percentage",:"hourly_rate",:"base_hourly_rate",:"overtime_hourly_rate",:"total_pay",:"base_pay",:"overtime_pay",:"overtime_hours",:"status");
+
+
+.SET QUIET OFF;
+.REMARK 'Collectin statistics...';
+.SET QUIET ON;
+/************* Collecting some statistics *************/
+
+COLLECT STATISTICS COLUMN (job_code) ON br_jobs;
+COLLECT STATISTICS COLUMN (legacy_flag) ON br_jobs;
+COLLECT STATISTICS COLUMN (job_title) ON br_jobs;
+
+COLLECT STATISTICS COLUMN (department_number) ON br_departments;
+COLLECT STATISTICS COLUMN (manager_employee_number) ON br_departments;
+
+COLLECT STATISTICS COLUMN (division_number) ON br_divisions;
+COLLECT STATISTICS COLUMN (department_number) ON br_divisions;
+
+COLLECT STATISTICS COLUMN (employee_number) ON br_payroll;
+COLLECT STATISTICS COLUMN (department_number) ON br_payroll;
+COLLECT STATISTICS COLUMN (division_number) ON br_payroll;
+COLLECT STATISTICS COLUMN (job_code) ON br_payroll;
+COLLECT STATISTICS COLUMN (status) ON br_payroll;
+COLLECT STATISTICS COLUMN (last_name) ON br_payroll;
+COLLECT STATISTICS COLUMN (hire_end_date) ON br_payroll;
+
+COLLECT STATISTICS COLUMN (employee_number) ON br_salary_hist;
+COLLECT STATISTICS COLUMN (department_number) ON br_salary_hist;
+COLLECT STATISTICS COLUMN (division_number) ON br_salary_hist;
+COLLECT STATISTICS COLUMN (job_code) ON br_salary_hist;
+COLLECT STATISTICS COLUMN (status) ON br_salary_hist;
+COLLECT STATISTICS COLUMN (last_name) ON br_salary_hist;
+COLLECT STATISTICS COLUMN (sal_year) ON br_salary_hist;
+
+
+.SET QUIET OFF;
+.REMARK 'Adding Foreign Keys';
+.SET QUIET ON;
+
+/************* Adding Foreign Keys *************/
+
+ALTER TABLE br_departments
+ADD FOREIGN KEY (manager_employee_number) REFERENCES WITH NO CHECK OPTION br_payroll (employee_number); 
+
+ALTER TABLE br_divisions
+ADD FOREIGN KEY (department_number) REFERENCES WITH NO CHECK OPTION br_departments (department_number); 
+
+ALTER TABLE br_payroll
+ADD FOREIGN KEY (department_number) REFERENCES WITH NO CHECK OPTION br_departments (department_number); 
+
+ALTER TABLE br_payroll
+ADD FOREIGN KEY (division_number) REFERENCES WITH NO CHECK OPTION br_divisions (division_number); 
+
+ALTER TABLE br_payroll
+ADD FOREIGN KEY (job_code) REFERENCES WITH NO CHECK OPTION br_jobs (job_code); 
+
+ALTER TABLE br_payroll
+ADD FOREIGN KEY (pay_grade, pay_step) REFERENCES WITH NO CHECK OPTION br_pay_plan (pay_grade, pay_step); 
+
+ALTER TABLE br_salary_hist
+ADD FOREIGN KEY (department_number) REFERENCES WITH NO CHECK OPTION br_departments (department_number); 
+
+ALTER TABLE br_salary_hist
+ADD FOREIGN KEY (division_number) REFERENCES WITH NO CHECK OPTION br_divisions (division_number); 
+
+ALTER TABLE br_salary_hist
+ADD FOREIGN KEY (job_code) REFERENCES WITH NO CHECK OPTION br_jobs (job_code); 
+
+
+.SET QUIET OFF;
+.REMARK 'Creating views...';
+.SET QUIET ON;
+
+/************* Create Views *************/
+
+REPLACE VIEW br_active_jobs AS
+SELECT
+   job_code
+  ,pay_grade
+  ,job_title
+FROM br_jobs
+WHERE legacy_flag = 0
+;
+COMMENT ON VIEW br_active_jobs IS 'Returns job codes currently in use from the br_jobs table';
+
+
+REPLACE VIEW br_active_employees AS
+SELECT 
+   employee_number
+  ,last_name
+  ,first_name
+  ,middle_initial
+  ,name_suffix
+  ,birthdate
+  ,department_number
+  ,division_number
+  ,job_code
+  ,pay_grade
+  ,pay_step
+  ,gender
+  ,race
+  ,hire_date
+  ,years_service
+  ,scheduled_hours
+  ,longevity_percentage
+  ,base_hourly_rate
+  ,total_hourly_rate
+  ,overtime_hourly_rate
+  ,annual_salary
+  ,status
+FROM br_payroll
+WHERE hire_end_date IS NULL
+;
+COMMENT ON VIEW br_active_employees IS 'Returns currently active employees from the br_payroll table';
