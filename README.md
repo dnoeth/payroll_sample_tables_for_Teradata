@@ -10,7 +10,7 @@ Real world payroll data based on two Public Domain datasets published by the cit
 
 ## Description
 
-The data was downloaded, cleaned and split into multiple normalized tables in January 2019.  All files contain tab-delimited data:
+The data was downloaded, cleaned and split into multiple normalized tables in January 2019. A random date (based upon hire_date & years in service) was added as an employee's birthdate. All files contain tab-delimited data:
 
     br_departments.tsv, 53 rows: Departments within City-Parish government (PK: department_number)
     br_divisions.tsv, 271 rows: Divisions within City-Parish government (PK: division_number)
