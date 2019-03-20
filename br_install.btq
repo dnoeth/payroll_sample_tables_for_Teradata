@@ -2,7 +2,7 @@
 
 /************** modify logon & database **************/
 .LOGON myTeradata/myUser,myPassword;
-DATABASE teradata_education;
+DATABASE open_data;
 /*****************************************************/
 
 .SET QUIET ON;
@@ -19,20 +19,17 @@ order due to the FK constraints
 /*
     ALTER TABLE br_departments
     DROP FOREIGN KEY (manager_employee_number) REFERENCES WITH NO CHECK OPTION br_payroll (employee_number); 
-    DROP TABLE br_payroll;
     DROP TABLE br_salary_hist;
+    DROP TABLE br_payroll;
     DROP TABLE br_pay_plan;
     DROP TABLE br_divisions;
     DROP TABLE br_departments;
     DROP TABLE br_jobs;
-    DROP VIEW br_active_employees;
-    DROP VIEW br_active_jobs;
+    DROP VIEW br_current_employees;
+    DROP VIEW br_current_jobs;
 */
 
-
-.SET QUIET OFF;
 .REMARK 'Creating tables...';
-.SET QUIET ON;
 
 /************* Create Tables *************/
 
@@ -101,12 +98,12 @@ CREATE SET TABLE br_payroll ,NO FALLBACK
       first_name VARCHAR(25) CHARACTER SET Latin NOT CaseSpecific NOT NULL,
       middle_initial CHAR(1) CHARACTER SET Latin Uppercase NOT CaseSpecific,
       name_suffix VARCHAR(3) CHARACTER SET Latin NOT CaseSpecific,
-      birthdate DATE FORMAT 'yyyy-mm-dd',
+      birthdate DATE FORMAT 'yyyy-mm-dd' NOT NULL,
       department_number BYTEINT NOT NULL,
       division_number INTEGER NOT NULL,
       job_code INTEGER,
-      pay_grade SMALLINT NOT NULL,
-      pay_step BYTEINT NOT NULL,
+      pay_grade SMALLINT,
+      pay_step BYTEINT,
       gender CHAR(1) CHARACTER SET Latin Uppercase NOT CaseSpecific NOT NULL,
       race CHAR(1) CHARACTER SET Latin Uppercase NOT CaseSpecific NOT NULL,
       hire_date DATE FORMAT 'YYYY-MM-DD' NOT NULL,
@@ -114,9 +111,9 @@ CREATE SET TABLE br_payroll ,NO FALLBACK
       years_service BYTEINT NOT NULL,
       scheduled_hours DECIMAL(4,1) NOT NULL,
       longevity_percentage DECIMAL(2,2) NOT NULL,
-      base_hourly_rate DECIMAL(6,2) NOT NULL,
-      total_hourly_rate DECIMAL(6,2) NOT NULL,
-      overtime_hourly_rate DECIMAL(7,2) NOT NULL,
+      base_hourly_rate DECIMAL(5,2) NOT NULL,
+      total_hourly_rate DECIMAL(5,2) NOT NULL,
+      overtime_hourly_rate DECIMAL(5,2) NOT NULL,
       annual_salary DECIMAL(8,2) NOT NULL,
       status BYTEINT NOT NULL)
 UNIQUE PRIMARY INDEX ( employee_number );
@@ -150,21 +147,21 @@ COMMENT ON COLUMN br_payroll.status               IS 'Status in payroll system: 
 CREATE SET TABLE br_salary_hist ,NO FALLBACK
      (
       employee_number INTEGER NOT NULL,
-      sal_year SMALLINT,
+      sal_year SMALLINT NOT NULL,
       last_name VARCHAR(25) CHARACTER SET Latin NOT CaseSpecific NOT NULL,
       first_name VARCHAR(25) CHARACTER SET Latin NOT CaseSpecific NOT NULL,
       middle_initial CHAR(1) CHARACTER SET Latin Uppercase NOT CaseSpecific,
       name_suffix VARCHAR(3) CHARACTER SET Latin NOT CaseSpecific,
       department_number BYTEINT NOT NULL,
       division_number INTEGER NOT NULL,
-      job_code INTEGER,
+      job_code INTEGER NOT NULL,
       hire_date DATE FORMAT 'YYYY-MM-DD' NOT NULL,
       employment_end_date DATE FORMAT 'YYYY-MM-DD',
       scheduled_hours SMALLINT NOT NULL,
       longevity_percentage DECIMAL(2,2) NOT NULL,
-      hourly_rate DECIMAL(6,2) NOT NULL,
-      base_hourly_rate DECIMAL(6,2) NOT NULL,
-      overtime_hourly_rate DECIMAL(7,2) NOT NULL,
+      base_hourly_rate DECIMAL(5,2) NOT NULL,
+      total_hourly_rate DECIMAL(5,2) NOT NULL,
+      overtime_hourly_rate DECIMAL(5,2) NOT NULL,
       total_pay DECIMAL(9,2) NOT NULL,
       base_pay DECIMAL(9,2) NOT NULL,
       overtime_pay DECIMAL(9,2) NOT NULL,
@@ -186,8 +183,8 @@ COMMENT ON COLUMN br_salary_hist.hire_date            IS 'Most current date empl
 COMMENT ON COLUMN br_salary_hist.employment_end_date  IS 'End of service date. The employee may have retired, resigned or was terminated';
 COMMENT ON COLUMN br_salary_hist.scheduled_hours      IS 'Scheduled hours per pay period';
 COMMENT ON COLUMN br_salary_hist.longevity_percentage IS 'Percentage of pay earned by employee for longevity with City-Parish';
-COMMENT ON COLUMN br_salary_hist.hourly_rate          IS 'Hourly rate based on pay grade and step';
-COMMENT ON COLUMN br_salary_hist.base_hourly_rate     IS 'Hourly rate plus longevity and other earning allowances (Educational, Hazardous Pay, etc)';
+COMMENT ON COLUMN br_salary_hist.base_hourly_rate     IS 'Hourly rate based on pay grade and step';
+COMMENT ON COLUMN br_salary_hist.total_hourly_rate    IS 'Hourly rate plus longevity and other earning allowances (Educational, Hazardous Pay, etc)';
 COMMENT ON COLUMN br_salary_hist.overtime_hourly_rate IS 'Total hourly rate multiplied by 1.5';
 COMMENT ON COLUMN br_salary_hist.total_pay            IS 'Base pay plus overtime plus/minus any adjustments';
 COMMENT ON COLUMN br_salary_hist.base_pay             IS 'Annual salary plus longevity and other earning allowances (Educational, Hazardous Pay, etc) ';
@@ -196,9 +193,7 @@ COMMENT ON COLUMN br_salary_hist.overtime_hours       IS 'Total number of overti
 COMMENT ON COLUMN br_salary_hist.status               IS 'Status in payroll system: 0 - Active, 1 - Temporary Leave (no arrears), 2 - Temporary Leave with Arrears, 3 - Inactive, 4 - Terminated Last Pay Period, 5 - No longer with City-Parish';
 
 
-.SET QUIET OFF;
 .REMARK 'Loading Tables...';
-.SET QUIET ON;
 
 /************* Load Tables *************/
 
@@ -249,14 +244,13 @@ VALUES (:"employee_number",:"last_name",:"first_name",:"middle_initial",:"name_s
 .REMARK 'Loading br_salary_hist: 54338 rows';
 .IMPORT vartext '	'  FILE br_salary_hist.tsv
 .REPEAT * Pack 5000
-USING ("employee_number" VARCHAR(11),"sal_year" VARCHAR(6),"last_name" VARCHAR(25),"first_name" VARCHAR(25),"middle_initial" VARCHAR(1),"name_suffix" VARCHAR(3),"department_number" VARCHAR(4),"division_number" VARCHAR(11),"job_code" VARCHAR(11),"hire_date" VARCHAR(10),"employment_end_date" VARCHAR(10),"scheduled_hours" VARCHAR(6),"longevity_percentage" VARCHAR(4),"hourly_rate" VARCHAR(8),"base_hourly_rate" VARCHAR(8),"overtime_hourly_rate" VARCHAR(9),"total_pay" VARCHAR(11),"base_pay" VARCHAR(11),"overtime_pay" VARCHAR(11),"overtime_hours" VARCHAR(8),"status" VARCHAR(4))
-INSERT INTO br_salary_hist ("employee_number","sal_year","last_name","first_name","middle_initial","name_suffix","department_number","division_number","job_code","hire_date","employment_end_date","scheduled_hours","longevity_percentage","hourly_rate","base_hourly_rate","overtime_hourly_rate","total_pay","base_pay","overtime_pay","overtime_hours","status")
-VALUES (:"employee_number",:"sal_year",:"last_name",:"first_name",:"middle_initial",:"name_suffix",:"department_number",:"division_number",:"job_code",:"hire_date",:"employment_end_date",:"scheduled_hours",:"longevity_percentage",:"hourly_rate",:"base_hourly_rate",:"overtime_hourly_rate",:"total_pay",:"base_pay",:"overtime_pay",:"overtime_hours",:"status");
+USING ("employee_number" VARCHAR(11),"sal_year" VARCHAR(6),"last_name" VARCHAR(25),"first_name" VARCHAR(25),"middle_initial" VARCHAR(1),"name_suffix" VARCHAR(3),"department_number" VARCHAR(4),"division_number" VARCHAR(11),"job_code" VARCHAR(11),"hire_date" VARCHAR(10),"employment_end_date" VARCHAR(10),"scheduled_hours" VARCHAR(6),"longevity_percentage" VARCHAR(4),"total_hourly_rate" VARCHAR(8),"base_hourly_rate" VARCHAR(8),"overtime_hourly_rate" VARCHAR(9),"total_pay" VARCHAR(11),"base_pay" VARCHAR(11),"overtime_pay" VARCHAR(11),"overtime_hours" VARCHAR(8),"status" VARCHAR(4))
+INSERT INTO br_salary_hist ("employee_number","sal_year","last_name","first_name","middle_initial","name_suffix","department_number","division_number","job_code","hire_date","employment_end_date","scheduled_hours","longevity_percentage","base_hourly_rate","total_hourly_rate","overtime_hourly_rate","total_pay","base_pay","overtime_pay","overtime_hours","status")
+VALUES (:"employee_number",:"sal_year",:"last_name",:"first_name",:"middle_initial",:"name_suffix",:"department_number",:"division_number",:"job_code",:"hire_date",:"employment_end_date",:"scheduled_hours",:"longevity_percentage",:"base_hourly_rate",:"total_hourly_rate",:"overtime_hourly_rate",:"total_pay",:"base_pay",:"overtime_pay",:"overtime_hours",:"status");
 
 
-.SET QUIET OFF;
 .REMARK 'Collectin statistics...';
-.SET QUIET ON;
+
 /************* Collecting some statistics *************/
 
 COLLECT STATISTICS COLUMN (job_code) ON br_jobs;
@@ -286,9 +280,7 @@ COLLECT STATISTICS COLUMN (last_name) ON br_salary_hist;
 COLLECT STATISTICS COLUMN (sal_year) ON br_salary_hist;
 
 
-.SET QUIET OFF;
 .REMARK 'Adding Foreign Keys';
-.SET QUIET ON;
 
 /************* Adding Foreign Keys *************/
 
@@ -320,13 +312,11 @@ ALTER TABLE br_salary_hist
 ADD FOREIGN KEY (job_code) REFERENCES WITH NO CHECK OPTION br_jobs (job_code); 
 
 
-.SET QUIET OFF;
 .REMARK 'Creating views...';
-.SET QUIET ON;
 
 /************* Create Views *************/
 
-REPLACE VIEW br_active_jobs AS
+REPLACE VIEW br_current_jobs AS
 SELECT
    job_code
   ,pay_grade
@@ -334,10 +324,10 @@ SELECT
 FROM br_jobs
 WHERE legacy_flag = 0
 ;
-COMMENT ON VIEW br_active_jobs IS 'Returns job codes currently in use from the br_jobs table';
+COMMENT ON VIEW br_current_jobs IS 'Returns job codes currently in use from the br_jobs table';
 
 
-REPLACE VIEW br_active_employees AS
+REPLACE VIEW br_current_employees AS
 SELECT 
    employee_number
   ,last_name
@@ -364,4 +354,4 @@ SELECT
 FROM br_payroll
 WHERE hire_end_date IS NULL
 ;
-COMMENT ON VIEW br_active_employees IS 'Returns currently active employees from the br_payroll table';
+COMMENT ON VIEW br_current_employees IS 'Returns currently active employees from the br_payroll table';
